@@ -1,0 +1,21 @@
+In each generation: each organism is 1/4 likely to be AaBb, and 3/4 not. (From observation)
+For kth generation, there will be 2^k organisms, the probability that at least n organisms have AaBb genotype is the sum of the probabilities of n, n+1,..., 2^k organisms having AaBb genotype.
+
+
+Pesudocode:
+
+class IndependentAlleles {
+	
+	getIndependentAlleles(k,n){
+		population = 2^k;		
+		pr = 0;
+		for(i=n; i<=population; i++){
+			pr += combination(population,i) * (1/4)^i * (3/4)^(population-i); 
+		}
+		return pr;
+	}
+
+	combination(n,r){
+		return factorial(n)/(factorial(r)*factorial(n-r));
+	}	
+} 
