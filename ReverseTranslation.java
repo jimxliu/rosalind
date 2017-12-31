@@ -1,3 +1,8 @@
+/*
+Given: A protein string of length at most 1000 aa.
+Return: The total number of different RNA strings from which the protein could have been translated, modulo 1,000,000. (Don't neglect the importance of the stop codon in protein translation.)
+*/
+
 import java.util.*;
 import java.io.Console;
 
@@ -43,7 +48,7 @@ public class ReverseTranslation { // Frequency of a type of amino acid represent
       variety %= 1000000; // Don't forget to do modulo
     }
     variety *= table.get("Stop"); // Don't forget the Stop codon
-    variety %= 1000000; 
+    variety %= 1000000;
 
     System.out.format("Total number of different mRNA strings possibly translated from the protein: %d\n", variety);
   }
