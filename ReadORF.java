@@ -1,7 +1,15 @@
 import java.util.*;
 import java.io.*;
 
+/* Problem:
+ * Either strand of a DNA double helix can serve as the coding strand for RNA transcription. Hence, a given DNA string implies six total reading frames, or ways in which the same region of DNA can be translated into amino acids: three reading frames result from reading the string itself, whereas three more result from reading its reverse complement.
+ * An open reading frame (ORF) is one which starts from the start codon and ends by stop codon, without any other stop codons in between. Thus, a candidate protein string is derived by translating an open reading frame into amino acids until a stop codon is reached.
+ * Given: A DNA string s of length at most 1 kbp in FASTA format.
+ * Return: Every distinct candidate protein string that can be translated from ORFs of s. Strings can be returned in any order.
+ */
+
 public class ReadORF {
+  // Construct a codon table
   public static final Map<String,String> codonTable;
   static {
     Map<String,String> tempMap = new HashMap<String,String>();
@@ -23,7 +31,9 @@ public class ReadORF {
     tempMap.put("TGG","W");tempMap.put("CGG","R");tempMap.put("AGG","R");tempMap.put("GGG","G");
     codonTable = Collections.unmodifiableMap(tempMap);
   }
-
+  /* @param str a string of DNA sequence
+   * @return the reverse-complementary string of the DNA sequence
+  */
   public static String reverseComplement(String str) {
     Map<Character,Character> basePair = new HashMap<Character,Character>();
     basePair.put('A','T');
@@ -40,7 +50,10 @@ public class ReadORF {
     //System.out.format("Reversed complementary sequence: %s\n",revCompStr.toString());
     return revCompSB.toString();
   }
-
+  
+/* @param dna The DNA sequence to be translated 
+ * @return protein sequence
+ */
   public static String translate(String dna) {
     String protein = "";
     for(int i=0; i < dna.length() - 2; i += 3) {
@@ -50,7 +63,11 @@ public class ReadORF {
     return protein;
   }
 
-  public static void findORF (String sequence, Set<String> list) {
+/* Find all the possible protein sequences and add them to a set
+ * @param sequence DNA sequence
+ * @param set The set containing all the possible protein sequences
+ */
+  public static void findORF (String sequence, Set<String> set) {
     // Find a start codon and a nearest stop codon and print out the protein sequence of this subsequence
     while(sequence.length() >= 6) { // the sequence cant be short than just a start and a stop codon (6 na)
       int start = -1;
@@ -59,7 +76,7 @@ public class ReadORF {
           if(codonTable.get(sequence.substring(i,i+3)).equals("Stop")) { // If a stop codon can be found
             int stop = i;
             String candidate = translate(sequence.substring(start,stop));
-            list.add(candidate);
+            set.add(candidate);
             //System.out.format("start from: %d, stop at: %d\n",start,stop);
             break;
           }
@@ -71,6 +88,9 @@ public class ReadORF {
     }
   }
 
+  /* @param dna DNA sequence
+   * @return the set containing all possible protein sequences translated from the double-stranded DNA 
+   */
   public static Set<String> getProteins(String dna) {
     Set<String> list = new HashSet<String>(); // List to contain all the possible protein candidates
     findORF(dna,list);
@@ -78,6 +98,9 @@ public class ReadORF {
     return list;
   }
 
+/* @param filename The name of the fasta file to read 
+ * @return DNA sequence
+ */
   public static String readFasta(String filename) {
     BufferedReader br = null;
     String sequence = "";
